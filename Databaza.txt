@@ -1,0 +1,42 @@
+-- Krijimi i bazës së të dhënave
+CREATE DATABASE IF NOT EXISTS blog_platform;
+
+-- Përdor bazën e të dhënave
+USE blog_platform;
+
+-- Tabela për ruajtjen e përdoruesve
+CREATE TABLE IF NOT EXISTS users (
+    user_id INT AUTO_INCREMENT PRIMARY KEY,
+    username VARCHAR(50) NOT NULL UNIQUE,
+    password VARCHAR(255) NOT NULL
+);
+
+-- Tabela për ruajtjen e postimeve të blogut
+CREATE TABLE IF NOT EXISTS posts (
+    post_id INT AUTO_INCREMENT PRIMARY KEY,
+    title VARCHAR(100) NOT NULL,
+    content TEXT NOT NULL,
+    author_id INT,
+    FOREIGN KEY (author_id) REFERENCES users(user_id)
+);
+
+-- Tabela për ruajtjen e komenteve
+CREATE TABLE IF NOT EXISTS comments (
+    comment_id INT AUTO_INCREMENT PRIMARY KEY,
+    content TEXT NOT NULL,
+    post_id INT,
+    author_id INT,
+    FOREIGN KEY (post_id) REFERENCES posts(post_id),
+    FOREIGN KEY (author_id) REFERENCES users(user_id)
+);
+
+-- Tabela për ruajtjen e informacionit shtesë të përdoruesve (p.sh. emri, mbiemri, email etj.)
+CREATE TABLE IF NOT EXISTS user_info (
+    user_id INT PRIMARY KEY,
+    first_name VARCHAR(50),
+    last_name VARCHAR(50),
+    email VARCHAR(100),
+    bio TEXT,
+    profile_picture VARCHAR(255),
+    FOREIGN KEY (user_id) REFERENCES users(user_id)
+);

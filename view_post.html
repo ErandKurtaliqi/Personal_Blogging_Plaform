@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>View Post</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <?php
+    $conn = new mysqli('localhost', 'root', 'password', 'blog_platform');
+    if ($conn->connect_error) {
+        die('Connection failed: ' . $conn->connect_error);
+    }
+
+    $post_id = $_GET['post_id'];
+    $sql = "SELECT * FROM posts WHERE post_id='$post_id'";
+    $result = $conn->query($sql);
+    $post = $result->fetch_assoc();
+
+    echo "<h2 id='post-title'>" . $post['title'] . "</h2>";
+    echo "<p id='post-content'>" . $post['content'] . "</p>";
+
+    echo "<h3>Comments</h3>";
+    $sql = "SELECT * FROM comments WHERE post_id='$post_id'";
+    $result = $conn->query($sql);
+
+    if ($result->num_rows > 0) {
+        while($row = $result->fetch_assoc()) {
+            echo "<div id='comments'>";
+            echo "<p>" . $row['content'] . "</p>";
+            echo "</div>";
+        }
+    } else {
+        echo "No comments yet.";
+    }
+
+    $conn->close();
+    ?>
+    <h3>Add a Comment</h3>
+    <form action="add_comment.php" method="post">
+        <input type="hidden" id="post_id" name="post_id" value="<?php echo $post_id; ?>">
+        <label for="content">Comment:</label>
+        <textarea id="content" name="content" required></textarea><br><br>
+        <input type="submit" value="Add Comment">
+    </form>
+</body>
+</html>
